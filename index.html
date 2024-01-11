@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Balance Checker</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Include Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Set the background image */
+        body {
+            background-image: url('https://cdn.discordapp.com/attachments/555680674812788740/1146848356186992762/Thumbnail_6.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Adjust button color */
+        #checkBalanceBtn {
+            background-color: #B21E3B;
+        }
+
+        /* Style the balance card */
+        #balanceCard {
+            background-color: #F0FFF4;
+            border: 1px solid #C6F6D5;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Style the Font Awesome icons */
+        i {
+            font-size: 20px;
+            margin-right: 8px;
+            color: #4A90E2; /* Change the icon color as needed */
+        }
+
+        /* Style the currency symbol */
+        #balanceAmount .text-lg {
+            font-size: 24px;
+            margin-right: 5px;
+            color: #4A90E2; /* Change the color as needed */
+        }
+
+        /* Style the balance value */
+        #balanceValue {
+            font-size: 36px;
+            color: #4A90E2; /* Change the color as needed */
+        }
+
+        /* Style the error card */
+        #errorCard {
+            background-color: #FFEBE6;
+            border: 1px solid #FFADAB;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Style the error message */
+        #errorMessage {
+            font-size: 18px;
+            color: #FF0000; /* Red color for error message */
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="max-w-md p-6 bg-white rounded-lg shadow-md grid gap-4">
+        <div class="w-1/2 mx-auto">
+            <!-- Logo placed outside of the card -->
+            <img src="https://cdn.discordapp.com/attachments/555680674812788740/1146846106613973134/Group_188.png" alt="Website Logo" class="w-full">
+        </div>
+        <div>
+            <h1 class="text-2xl font-semibold mb-4">Wallet Balance Checker</h1>
+            <p class="mb-2">Enter your wallet ID to check your balance:</p>
+            <input type="text" id="walletId" placeholder="Enter Wallet ID" class="w-full p-2 border rounded-md">
+            <button id="checkBalanceBtn" class="mt-2 w-full text-white px-4 py-2 rounded-md hover:bg-opacity-90">Check Balance</button>
+            <div id="balanceCard" class="hidden p-4 bg-green-100 border border-green-300 rounded-lg mt-4">
+                <div>
+                    <p id="userName" class="font-semibold text-2xl mb-2"></p>
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-user-circle text-gray-600 mr-2"></i> <!-- Font Awesome user icon -->
+                        <p id="userType" class="font-semibold text-lg"></p>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-calendar-alt text-gray-600 mr-2"></i> <!-- Font Awesome calendar icon -->
+                        <p id="lastPaid" class="font-semibold text-lg"></p>
+                    </div>
+                    <p class="font-semibold text-lg">Wallet Balance:</p>
+                    <p id="balanceAmount" class="text-2xl font-semibold text-green-700 flex items-center">
+                        <span class="text-lg font-normal">₹</span>
+                        <span id="balanceValue"></span>
+                    </p>
+                </div>
+            </div>
+            <!-- Error Card -->
+            <div id="errorCard" class="hidden p-4 bg-red-100 border border-red-300 rounded-lg text-red-700 mt-4">
+                <p id="errorMessage">Wallet ID not found. Please check the ID and try again.</p>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
