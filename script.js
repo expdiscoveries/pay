@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Element references
     const checkBalanceBtn = document.getElementById("checkBalanceBtn");
     const walletIdInput = document.getElementById("walletId");
     const balanceCard = document.getElementById("balanceCard");
@@ -9,67 +10,70 @@ document.addEventListener("DOMContentLoaded", function () {
     const errorCard = document.getElementById("errorCard");
     const errorMessage = document.getElementById("errorMessage");
 
+    // Click event listener for the Check Balance button
     checkBalanceBtn.addEventListener("click", async () => {
-        const walletId = walletIdInput.value;
+        const walletId = walletIdInput.value.trim();
 
         if (!walletId) {
-            // Display an error message or handle accordingly
+            showErrorMessage('Please enter a Wallet ID.');
             return;
         }
 
-        // Hide the error card if it was previously displayed
+        // Add spinner to button and disable it
+        showButtonSpinner(true);
+
+        // API fetching logic
+        try {
+            const response = await fetchBalance(walletId);
+            if (response) {
+                showBalance(response);
+            } else {
+                showErrorMessage('Wallet ID not found. Please check the ID and try again.');
+            }
+        } catch (error) {
+            showErrorMessage('An error occurred while fetching data. Please try again later.');
+        } finally {
+            // Remove spinner from button and re-enable it
+            showButtonSpinner(false);
+        }
+    });
+
+    function showButtonSpinner(isLoading) {
+        if (isLoading) {
+            checkBalanceBtn.innerHTML = '<div class="button-spinner"></div>';
+            checkBalanceBtn.classList.add('spinner-active');
+        } else {
+            checkBalanceBtn.textContent = 'Check Balance';
+            checkBalanceBtn.classList.remove('spinner-active');
+        }
+    }
+
+    function showBalance(data) {
+        userName.textContent = `Hello, ${data.name}!`;
+        userType.textContent = `Work Type: ${data.type}`;
+        lastPaid.textContent = `Last Payment Date: ${data.lastPaid}`;
+        balanceAmount.textContent = `Wallet Balance: ₹${data.balance}`;
+
+        balanceCard.classList.remove("hidden");
         errorCard.classList.add("hidden");
-        
-        // Hide the balance card initially
+    }
+
+    function showErrorMessage(message) {
+        errorMessage.textContent = message;
+        errorCard.classList.remove("hidden");
         balanceCard.classList.add("hidden");
+    }
 
-        // Display loading animation and message
-        userName.textContent = 'Loading...';
-        userType.textContent = '';
-        lastPaid.textContent = '';
-        balanceAmount.textContent = 'Checking balance...';
-
-        // Assume the API fetching logic as before
+    async function fetchBalance(walletId) {
         const apiKey = 'keyu5NxlinuYFmOfG';
         const baseId = 'appkYzaSZokXwritc';
         const tableName = 'redeemcode';
-
-        try {
-            const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}?filterByFormula=code%3D"${walletId}"`, {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`
-                }
-            });
-
-            const data = await response.json();
-
-            if (data.records.length > 0) {
-                const name = data.records[0].fields.name;
-                const balance = data.records[0].fields.balance;
-                const userTypeValue = data.records[0].fields.type;
-                const lastPaidValue = data.records[0].fields.lastpaid;
-
-                // Display the result card only when a valid wallet ID is found
-                balanceCard.classList.remove("hidden");
-
-                userName.textContent = `Hello, ${name}!`;
-                userType.textContent = `Work Type: ${userTypeValue}`;
-                lastPaid.textContent = `Last Payment Date: ${lastPaidValue}`;
-                balanceAmount.textContent = `Wallet Balance: ₹${balance}`;
-            } else {
-                // Display the error card with the error message
-                errorCard.classList.remove("hidden");
-                errorMessage.textContent = 'Wallet ID not found. Please check the ID and try again.';
-                // Clear other fields
-                userName.textContent = '';
-                userType.textContent = '';
-                lastPaid.textContent = '';
-                balanceAmount.textContent = '';
+        const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}?filterByFormula=code%3D"${walletId}"`, {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`
             }
-        } catch (error) {
-            // Handle other errors
-            userName.textContent = 'An error occurred while fetching data.';
-            balanceAmount.textContent = '';
-        }
-    });
+        });
+        const data = await response.json();
+        return data.records.length > 0 ? data.records[0].fields : null;
+    }
 });
